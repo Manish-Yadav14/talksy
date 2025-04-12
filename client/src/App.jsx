@@ -30,7 +30,10 @@ function App() {
           streamRef.current.srcObject = stream;
         }
 
-        socket = io(import.meta.env.VITE_BACKEND_URL);
+        socket = io(import.meta.env.VITE_BACKEND_URL,{
+          transports: ["websocket"],
+          withCredentials: true
+        });
 
         const peer = new Peer();
         peerRef.current = peer;

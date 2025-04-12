@@ -9,7 +9,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: ["https://talksy-meet.vercel.app","http://localhost:5173"],
     methods: ["GET", "POST"]
   },
   pingInterval: 10000,   // Time between ping messages in ms
