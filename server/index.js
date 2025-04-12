@@ -12,6 +12,9 @@ const io = new Server(server, {
     origin: "*",
     methods: ["GET", "POST"]
   },
+  pingInterval: 10000,   // Time between ping messages in ms
+  pingTimeout: 5000,     // Time before considering a client disconnected
+  transports: ['websocket', 'polling'], // Fallback to polling if websockets fail
 });
 
 const users = new Map();

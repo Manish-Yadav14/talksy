@@ -30,7 +30,8 @@ function App() {
           streamRef.current.srcObject = stream;
         }
 
-        socket = io("http://localhost:5000");
+        socket = io(import.meta.env.VITE_BACKEND_URL);
+
         const peer = new Peer();
         peerRef.current = peer;
 
