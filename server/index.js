@@ -108,7 +108,7 @@ io.on("connection", (socket) => {
     const user = users.get(socket.id);
     // console.log("USERS AFTER DISCONNECT:- ",users);
 
-    if (!user) return;
+    if (!user) return;  
 
     const partnerSocketId = user.partner;
 
@@ -126,6 +126,10 @@ io.on("connection", (socket) => {
 
 app.use(cors())
 app.options('*', cors()); // Enable preflight for all routes
+
+app.get("/", (req, res) => {
+  res.send("Server is running....");
+});
 
 const PORT =  process.env.PORT || 5000
 server.listen(PORT, () => {
