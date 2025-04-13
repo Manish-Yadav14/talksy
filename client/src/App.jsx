@@ -32,19 +32,19 @@ function App() {
 
         socket = io(import.meta.env.VITE_BACKEND_URL,{
           transports: ["websocket"],
-          withCredentials: true
+          withCredentials: true,
+          pingInterval: 10000, // Ping interval to match server
         });
 
-        // On client
-        socket.on('ping', () => {
-          // Do nothing, just keep alive
+        // const peer = new Peer();
+        const peer = new Peer(undefined, {
+          host: import.meta.env.VITE_BACKEND_URL, 
+          port: 5000,  
+          path:'/peerjs' ,      
+          secure: false,   
         });
-
-        socket.on('disconnect',(reason)=>{
-          console.log("disconnected reason: ",reason);
-        })
-
-        const peer = new Peer();
+        
+        
         peerRef.current = peer;
 
         peer.on("open", (peerId) => {

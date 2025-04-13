@@ -2,20 +2,29 @@ import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
-require('dotenv').config();
+import {ExpressPeerServer} from 'peer'
 
 const app = express();
 const server = createServer(app);
 
+app.use(cors())
+app.options('*', cors()); // Enable preflight for all routes
+
 const io = new Server(server, {
   cors: {
-    origin: ["https://talksy-meet.vercel.app","http://localhost:5173"],
+    origin: "*",
     methods: ["GET", "POST"]
   },
   pingInterval: 20000,   // Time between ping messages in ms
   pingTimeout: 25000,     // Time before considering a client disconnected
   transports: ['websocket', 'polling'], // Fallback to polling if websockets fail
 });
+
+const peerServer = ExpressPeerServer(server,{
+  debug:true,
+})
+
+app.use('/peerjs',peerServer)
 
 const users = new Map();
 const lastMatchedUsers = new Map();
@@ -49,7 +58,7 @@ const tryMatchUsers = () => {
   const availableUsers = Array.from(users.entries()).filter(
     ([_, user]) => user.inCall===false && !lastMatchedUsers.has(user.peerId)
   );
-  console.log("AVAILABLE USERS:- ",availableUsers); 
+  // console.log("AVAILABLE USERS:- ",availableUsers); 
 
   if (availableUsers.length >= 2) {
     const [user1, user2] = pickTwoRandom(availableUsers);
@@ -67,10 +76,10 @@ const tryMatchUsers = () => {
     // Send each peer the other's PeerJS ID
     io.to(user1[0]).emit("matched", { peerId: user2[1].peerId });
     io.to(user2[0]).emit("matched", { peerId: user1[1].peerId });
-    console.log("USERS AFTER MATCHING:- ",user1,user2);
+
+    // console.log("USERS AFTER MATCHING:- ",user1,user2);
   }
 };
-
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
@@ -80,12 +89,6 @@ io.on("connection", (socket) => {
     users.set(socket.id, { peerId, inCall: false, partner: null });
     tryMatchUsers();
   });
-
-  // On server
-  setInterval(() => {
-    io.emit('ping', 'keep-alive');
-  }, 25000); // 25 seconds
-
 
   socket.on("leave-call", () => {
     const user = users.get(socket.id);
@@ -114,7 +117,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
     const user = users.get(socket.id);
-    console.log("USERS AFTER DISCONNECT:- ",users);
+    // console.log("USERS AFTER DISCONNECT:- ",users);
 
     if (!user) return;  
 
@@ -132,8 +135,7 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use(cors())
-app.options('*', cors()); // Enable preflight for all routes
+
 
 app.get("/", (req, res) => {
   res.send("Server is running....");
