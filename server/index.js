@@ -12,7 +12,7 @@ app.options('*', cors()); // Enable preflight for all routes
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://talksy1.netlify.app","http://localhost:5173"],
+    origin: ["https://talksy1.netlify.app","http://localhost:5173"],
     methods: ["GET", "POST"]
   },
   pingInterval: 20000,   // Time between ping messages in ms
