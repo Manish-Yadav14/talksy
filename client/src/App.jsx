@@ -35,6 +35,12 @@ function App() {
           withCredentials: true
         });
 
+        // On client
+        socket.on('ping', () => {
+          // Do nothing, just keep alive
+        });
+
+
         const peer = new Peer();
         peerRef.current = peer;
 

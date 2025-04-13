@@ -49,11 +49,11 @@ const tryMatchUsers = () => {
   const availableUsers = Array.from(users.entries()).filter(
     ([_, user]) => user.inCall===false && !lastMatchedUsers.has(user.peerId)
   );
-  // console.log("AVAILABLE USERS:- ",availableUsers); 
+  console.log("AVAILABLE USERS:- ",availableUsers); 
 
   if (availableUsers.length >= 2) {
     const [user1, user2] = pickTwoRandom(availableUsers);
-    // console.log("TWO RANDOM USERS:" , user1,user2);
+    console.log("TWO RANDOM USERS:" , user1,user2);
     
     users.get(user1[0]).inCall = true;
     users.get(user2[0]).inCall = true;
@@ -67,7 +67,7 @@ const tryMatchUsers = () => {
     // Send each peer the other's PeerJS ID
     io.to(user1[0]).emit("matched", { peerId: user2[1].peerId });
     io.to(user2[0]).emit("matched", { peerId: user1[1].peerId });
-    // console.log("USERS AFTER MATCHING:- ",user1,user2);
+    console.log("USERS AFTER MATCHING:- ",user1,user2);
   }
 };
 
@@ -76,10 +76,15 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
   socket.on("register-peer-id", ({ peerId }) => {
-    // console.log(`Registering peerId: ${peerId} for socket: ${socket.id}`);
+    console.log(`Registering peerId: ${peerId} for socket: ${socket.id}`);
     users.set(socket.id, { peerId, inCall: false, partner: null });
     tryMatchUsers();
   });
+
+  // On server
+  setInterval(() => {
+    io.emit('ping', 'keep-alive');
+  }, 25000); // 25 seconds
 
 
   socket.on("leave-call", () => {
@@ -109,7 +114,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
     const user = users.get(socket.id);
-    // console.log("USERS AFTER DISCONNECT:- ",users);
+    console.log("USERS AFTER DISCONNECT:- ",users);
 
     if (!user) return;  
 
