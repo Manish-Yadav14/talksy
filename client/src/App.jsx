@@ -40,6 +40,9 @@ function App() {
           // Do nothing, just keep alive
         });
 
+        socket.on('disconnect',(reason)=>{
+          console.log("disconnected reason: ",reason);
+        })
 
         const peer = new Peer();
         peerRef.current = peer;

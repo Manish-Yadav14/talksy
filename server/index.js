@@ -12,8 +12,8 @@ const io = new Server(server, {
     origin: ["https://talksy-meet.vercel.app","http://localhost:5173"],
     methods: ["GET", "POST"]
   },
-  pingInterval: 10000,   // Time between ping messages in ms
-  pingTimeout: 5000,     // Time before considering a client disconnected
+  pingInterval: 20000,   // Time between ping messages in ms
+  pingTimeout: 25000,     // Time before considering a client disconnected
   transports: ['websocket', 'polling'], // Fallback to polling if websockets fail
 });
 
