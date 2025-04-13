@@ -38,8 +38,9 @@ function App() {
 
         const peer = new Peer(undefined, {
           host: import.meta.env.VITE_PEER_URL, 
+          port:443,
           path:'/peerjs' ,      
-          secure: false,   
+          secure: true,   
         });
         
         
