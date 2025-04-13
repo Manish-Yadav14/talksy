@@ -36,10 +36,8 @@ function App() {
           pingInterval: 10000, // Ping interval to match server
         });
 
-        // const peer = new Peer();
         const peer = new Peer(undefined, {
-          host: import.meta.env.VITE_BACKEND_URL, 
-          port: 5000,  
+          host: import.meta.env.VITE_PEER_URL, 
           path:'/peerjs' ,      
           secure: false,   
         });
