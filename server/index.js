@@ -7,8 +7,15 @@ import {ExpressPeerServer} from 'peer'
 const app = express();
 const server = createServer(app);
 
-app.use(cors())
+app.use(cors(
+  {
+    origin: ["https://talksy1.netlify.app", "http://localhost:5173"],
+    methods: ["GET", "POST"],
+    // credentials: true,
+  }
+))
 app.options('*', cors()); // Enable preflight for all routes
+app.set("trust proxy", true);
 
 const io = new Server(server, {
   cors: {
@@ -17,7 +24,7 @@ const io = new Server(server, {
   },
   pingInterval: 20000,   // Time between ping messages in ms
   pingTimeout: 25000,     // Time before considering a client disconnected
-  transports: ['websocket', 'polling'], // Fallback to polling if websockets fail
+  transports: ['websocket','polling'], // Fallback to polling if websockets fail
 });
 
 const peerServer = ExpressPeerServer(server,{
