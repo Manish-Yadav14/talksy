@@ -32,7 +32,7 @@ function App() {
 
         socket = io(import.meta.env.VITE_BACKEND_URL,{
           path:'/socket.io',
-          transports: ["websocket","polling"],
+          transports: ["polling"],
           withCredentials: false,
           pingInterval: 20000, // Ping interval to match server
         });
