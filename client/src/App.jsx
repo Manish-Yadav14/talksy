@@ -33,14 +33,14 @@ function App() {
         socket = io(import.meta.env.VITE_BACKEND_URL,{
           transports: ["websocket"],
           withCredentials: true,
-          pingInterval: 10000, // Ping interval to match server
+          pingInterval: 20000, // Ping interval to match server
         });
 
         const peer = new Peer(undefined, {
           host: import.meta.env.VITE_PEER_URL, 
-          port:443,
-          path:'/peerjs' ,      
+          port:443, 
           secure: true,   
+          path:"/peerjs/myapp"
         });
         
         
