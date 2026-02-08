@@ -30,15 +30,18 @@ function App() {
           streamRef.current.srcObject = stream;
         }
 
-        console.log("Connecting to backend:", import.meta.env.VITE_BACKEND_URL);
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+        console.log("Connecting to backend:", backendUrl);
+        console.log("Environment:", import.meta.env.MODE);
         
-        socket = io(import.meta.env.VITE_BACKEND_URL,{
-          path:'/socket.io',
-          transports: ["websocket","polling"],
+        socket = io(backendUrl, {
+          path: '/socket.io',
+          transports: ["polling", "websocket"], // Try polling first
           withCredentials: true,
           reconnection: true,
           reconnectionAttempts: 5,
           reconnectionDelay: 1000,
+          timeout: 10000,
         });
 
         socket.on("connect", () => {

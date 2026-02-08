@@ -172,7 +172,23 @@ app.get("/", (req, res) => {
   res.send("Server is running....");
 });
 
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    users: users.size,
+    allowedOrigins: allowedOrigins,
+    env: {
+      FRONTEND_URL: process.env.FRONTEND_URL,
+      NODE_ENV: process.env.NODE_ENV,
+      PORT: process.env.PORT
+    }
+  });
+});
+
 const PORT =  process.env.PORT || 5000
 server.listen(PORT, () => {
   console.log(`Server is running on Port ${PORT}...`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`Frontend URL: ${process.env.FRONTEND_URL}`);
 });
