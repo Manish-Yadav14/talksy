@@ -38,10 +38,19 @@ function App() {
         });
 
         const peer = new Peer(undefined, {
-          host: import.meta.env.VITE_PEER_URL, 
-          port:443, 
-          secure: true,   
-          path:"/peerjs/myapp"
+          host: import.meta.env.VITE_PEER_HOST, 
+          port: Number(import.meta.env.VITE_PEER_PORT), 
+          secure: import.meta.env.VITE_PEER_SECURE === 'true',
+          path:"/peerjs/myapp",
+          config: {
+            iceServers: [
+              { urls: 'stun:stun.l.google.com:19302' },
+              { urls: 'stun:stun1.l.google.com:19302' },
+              { urls: 'stun:stun2.l.google.com:19302' },
+              { urls: 'stun:stun3.l.google.com:19302' },
+              { urls: 'stun:stun4.l.google.com:19302' },
+            ]
+          }
         });
         
         

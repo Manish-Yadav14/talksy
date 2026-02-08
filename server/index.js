@@ -3,15 +3,23 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
 import {ExpressPeerServer} from 'peer'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const server = createServer(app);
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173"
+].filter(Boolean);
+
 app.use(cors(
   {
-    origin: ["https://talksy1.netlify.app", "http://localhost:5173"],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
-    // credentials: true,
+    credentials: true,
   }
 ))
 app.options('*', cors()); // Enable preflight for all routes
@@ -19,16 +27,17 @@ app.set("trust proxy", true);
 
 const io = new Server(server, {
   cors: {
-    origin: ["https://talksy1.netlify.app","http://localhost:5173"],
-    methods: ["GET", "POST"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true
   },
-  pingInterval: 20000,   // Time between ping messages in ms
-  pingTimeout: 25000,     // Time before considering a client disconnected
+  pingInterval: 10000,   // Time between ping messages in ms
+  pingTimeout: 15000,     // Time before considering a client disconnected
   transports: ['websocket','polling'], // Fallback to polling if websockets fail
 });
 
 const peerServer = ExpressPeerServer(server,{
-  debug:true,
+  debug: process.env.NODE_ENV !== 'production',
   path:'/myapp',
   allow_discovery:true,
 })
