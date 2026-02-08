@@ -33,8 +33,10 @@ function App() {
         socket = io(import.meta.env.VITE_BACKEND_URL,{
           path:'/socket.io',
           transports: ["websocket","polling"],
-          withCredentials: false,
-          pingInterval: 20000, // Ping interval to match server
+          withCredentials: true,
+          reconnection: true,
+          reconnectionAttempts: 5,
+          reconnectionDelay: 1000,
         });
 
         const peer = new Peer(undefined, {
