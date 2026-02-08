@@ -30,6 +30,8 @@ function App() {
           streamRef.current.srcObject = stream;
         }
 
+        console.log("Connecting to backend:", import.meta.env.VITE_BACKEND_URL);
+        
         socket = io(import.meta.env.VITE_BACKEND_URL,{
           path:'/socket.io',
           transports: ["websocket","polling"],
@@ -37,6 +39,18 @@ function App() {
           reconnection: true,
           reconnectionAttempts: 5,
           reconnectionDelay: 1000,
+        });
+
+        socket.on("connect", () => {
+          console.log("Socket.IO connected!", socket.id);
+        });
+
+        socket.on("connect_error", (error) => {
+          console.error("Socket.IO connection error:", error);
+        });
+
+        socket.on("disconnect", (reason) => {
+          console.log("Socket.IO disconnected:", reason);
         });
 
         const peer = new Peer(undefined, {
